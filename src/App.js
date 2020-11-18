@@ -14,7 +14,6 @@ export default class ChatApp extends Component {
   }
 
   setLoggedinUser(userid) {
-    console.log("in setLoggedinUser method");
     this.setState({ isLoggedIn: true })
     this.setState({ id: userid })
   }

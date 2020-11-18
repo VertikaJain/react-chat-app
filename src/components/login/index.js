@@ -10,7 +10,6 @@ export default class Login extends Component {
     }
 
     onLoginComplete = (userid) => {
-        console.log("in onLoginComplete method");
         this.props.loginProp(userid)
     }
 
