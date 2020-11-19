@@ -34,3 +34,8 @@
   overflow: hidden;
   text-overflow: ellipsis; 
 }
+
+.input-box {
+  border-top: 1px solid;
+  border-top-color: rgb(214, 214, 214);
+}

@@ -27,9 +27,11 @@ export default class ChatWindow extends Component {
 
     render() {
         return (
-            <div className="container flex mx-auto m-16  border rounded h-screen">
-                {(this.state.users.length > 0) && <ContactList users={this.state.users} msgUser={this.getToMessageUserId} />}
-                {this.state.messageToUserID && <MessageBox userid={this.state.messageToUserID} />}
+            <div className="box-content mx-auto h-3/4 w-3/4 m-12 px-16 border rounded bg-blue-400">
+                <div className="container flex mx-auto m-16 rounded h-screen bg-white">
+                    {(this.state.users.length > 0) && <ContactList users={this.state.users} msgUser={this.getToMessageUserId} />}
+                    {this.state.messageToUserID && <MessageBox userid={this.state.messageToUserID} />}
+                </div>
             </div>
         )
     }
