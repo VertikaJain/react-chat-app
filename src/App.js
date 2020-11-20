@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import Login from './components/login'
-import ChatWindow from "./components/chatWindow";
+import Login from './components/login/login'
+import ChatWindow from "./components/chatWindow/chatWindow";
 
 import './App.css';
 export default class ChatApp extends Component {

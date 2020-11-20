@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import axios from 'axios'
-
+import API from '../../services/api'
+import ReactDOM from 'react-dom';
 export default class Login extends Component {
     constructor(props) {
         super(props)
@@ -13,12 +13,15 @@ export default class Login extends Component {
         this.props.loginProp(userid)
     }
 
-    login = () => {
+    login = async () => {
         // Call Login API to get user ID if the user exists in DB
-        axios.get(`http://localhost:3000/api/users/login/${this.state.username}`)
-            .then(response => {
-                this.onLoginComplete(response.data._id)
-            })
+        try {
+            let loginResult = await API.logIn(this.state.username)
+            this.onLoginComplete(loginResult.data._id)
+        } catch (error) {
+            let element = document.querySelector(".incorrect-user")
+            element.innerText = "Some Error Occurred."
+        }
     }
 
     handleUser = e => {
@@ -26,21 +29,22 @@ export default class Login extends Component {
     }
     render() {
         return (
-            <div>
-                <div className="login container mx-auto w-full max-w-xs items-center pt-12">
+            <div className="bg-gray-900">
+                <div className="login container mx-auto w-full max-w-xs items-center pt-12 h-screen">
                     <form action="chat.html" method="GET" className="bg-white shadow-md rounded px-8 pt-8 pb-8 m-4">
-                        <label className="block text-lg font-bold mb-4 py-2 text-center bg-blue-500 rounded text-white">QED42 Chat Login</label>
+                        <label className="block text-lg font-bold mb-4 py-2 text-center bg-gray-800 rounded text-white">QED42 Chat Login</label>
                         <div className="mb-4">
-                            <label className="block text-gray-700 text-sm font-bold mb-2"/*  for="username" */>
+                            <label className="block text-gray-700 text-sm font-bold mb-2">
                                 Username</label>
+                            <label className="incorrect-user text-red-500"></label>
                             <input value={this.state.username} onChange={(e) => this.handleUser(e)}
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="username" type="text" placeholder="Enter Username here..." />
                         </div>
                         <button id="login" onClick={() => this.login()}
-                            class="btn-primary rounded-full text-white font-bold py-2 px-4 mx-16 rounded focus:outline-none focus:shadow-outline place-self-center"
+                            className="btn-primary rounded-full text-white font-bold py-2 px-4 mx-16 rounded focus:outline-none focus:shadow-outline place-self-center"
                             type="button">
-                            Sign In</button>
+                            Login</button>
                     </form>
                     <p className="text-center text-gray-500 text-xs">
                         &copy;2020 QED42. All rights reserved.</p>

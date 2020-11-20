@@ -1,9 +1,9 @@
 .btn-primary {
-  background: #4299e1;
+  background: #2e3942;
   transition:all .3s ease-in-out
 }
 .btn-primary:hover {
-  background:#193788
+  background: black;
 }
 
 /* Messages Styles */
@@ -37,7 +37,7 @@
 
 .input-box {
   border-top: 1px solid;
-  border-top-color: rgb(214, 214, 214);
+  border-top-color: rgb(202, 202, 202);
 }
 
 .user {

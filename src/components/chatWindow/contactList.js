@@ -5,18 +5,17 @@ export default class ContactList extends Component {
         super(props)
         this.state = {
             users: this.props.users,
-            selectedUserID: ""
         }
     }
 
-    setSelectedUser(userid) {
-        this.setState({ selectedUserID: userid })
-        this.props.msgUser(userid)
+    setSelectedUser(selectedUser) {
+        this.props.selectedUser(selectedUser)
     }
 
     getContacts() {
+
         const contactDetails = this.state.users.map(user =>
-            <div className="user flex mt-2 p-2" id={user._id} key={user._id} onClick={() => this.setSelectedUser(user._id)}>
+            <div className="user flex mt-2 p-2 border-b " id={user._id} key={user._id} onClick={() => this.setSelectedUser(user)}>
                 <div className="w-1/4 rounded-full relative h-12 text-center">
                     <img className="profile-picture absolute h-full object-cover self-center px-2" src={user.img} alt="dp" />
                 </div>
@@ -32,11 +31,11 @@ export default class ContactList extends Component {
 
     render() {
         return (
-            <div className="contact-box w-2/5 bg-black text-white rounded-l">
+            <div className="contact-box w-2/5 bg-gray-900 text-white rounded-l">
                 <div className="flex mt-2">
                     <i class="las la-bars p-2 ml-2 text-xl"></i>
                     <i className="search-bar las la-search p-2 text-xl"></i>
-                    <input className="search-bar px-2 bg-black text-white w-full focus:outline-none focus:ring rounded" placeholder="Search here.."></input>
+                    <input className="search-bar px-2 bg-gray-900 text-white w-full focus:outline-none focus:ring rounded" placeholder="Search here.."></input>
                     <i class="las la-ellipsis-v p-2 text-xl"></i>
                 </div>
                 <div className="contact-list grid-cols-1 p-2">
