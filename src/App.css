@@ -18,7 +18,7 @@
   clear: both;
 }
 
-.outgoing {
+/* .outgoing {
   float: right;
   background-color: #ebf8ff;
 }
@@ -26,7 +26,7 @@
 .incoming {
   float: left;
   background-color: #bee3f8;
-}
+} */
 
 .last-message {
   white-space: nowrap; 
@@ -39,3 +39,14 @@
   border-top: 1px solid;
   border-top-color: rgb(214, 214, 214);
 }
+
+.user {
+    filter: none; 
+    transition: all .5s ease-in-out;  
+  }
+
+.user:hover {
+    filter: gray;
+    transform: scale(1.01);
+    cursor: pointer;
+  }
