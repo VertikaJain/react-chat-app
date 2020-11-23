@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import API from '../../services/api'
-import ReactDOM from 'react-dom';
+
 export default class Login extends Component {
     constructor(props) {
         super(props)

@@ -33,10 +33,10 @@ export default class ContactList extends Component {
         return (
             <div className="contact-box w-2/5 bg-gray-900 text-white rounded-l">
                 <div className="flex mt-2">
-                    <i class="las la-bars p-2 ml-2 text-xl"></i>
+                    <i className="las la-bars p-2 ml-2 text-xl"></i>
                     <i className="search-bar las la-search p-2 text-xl"></i>
                     <input className="search-bar px-2 bg-gray-900 text-white w-full focus:outline-none focus:ring rounded" placeholder="Search here.."></input>
-                    <i class="las la-ellipsis-v p-2 text-xl"></i>
+                    <i className="las la-ellipsis-v p-2 text-xl"></i>
                 </div>
                 <div className="contact-list grid-cols-1 p-2">
                     {this.getContacts()}

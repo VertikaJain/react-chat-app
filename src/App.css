@@ -50,3 +50,10 @@
     transform: scale(1.01);
     cursor: pointer;
   }
+
+.send-button:hover {
+    cursor: pointer;
+    transform: scale(1.30);
+    transition: all .5s ease-in-out;  
+
+  }

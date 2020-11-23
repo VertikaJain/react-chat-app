@@ -24,7 +24,6 @@ const getContacts = async (userid) => {
                 method: 'get',
                 url: Constants.BASE_URL + 'api/users/' + userid
             })
-            console.log("response from api.js: ", response);
             resolve(response)
         } catch (error) {
             reject(error)
