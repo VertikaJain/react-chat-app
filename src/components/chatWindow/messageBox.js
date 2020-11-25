@@ -30,7 +30,7 @@ export default class MessageBox extends Component {
                     <div className=" w-max text-black shadow-lg clear-both p-8 rounded-tl-md rounded-br-md rounded-bl-md mt-2">
                         {mdata.msg}</div>
                     <div className="w-16 rounded-full relative h-16 mx-2 px-2 border">
-                        <img className="profile-picture absolute h-full object-cover self-center p-2" src="https://upload.wikimedia.org/wikipedia/en/8/88/Sally_Brown.png" alt="dp" />
+                        <img className="profile-picture absolute h-full object-cover self-center p-2" src={this.props.loggedInUserDP} alt="dp" />
                     </div>
                 </div>)
             else

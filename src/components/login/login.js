@@ -9,15 +9,15 @@ export default class Login extends Component {
         }
     }
 
-    onLoginComplete = (userid) => {
-        this.props.loginProp(userid)
+    onLoginComplete = (loggedInUserObj) => {
+        this.props.loginProp(loggedInUserObj)
     }
 
     login = async () => {
         // Call Login API to get user ID if the user exists in DB
         try {
             let loginResult = await API.logIn(this.state.username)
-            this.onLoginComplete(loginResult.data._id)
+            this.onLoginComplete(loginResult.data)
         } catch (error) {
             let element = document.querySelector(".incorrect-user")
             element.innerText = "Some Error Occurred."
@@ -32,7 +32,7 @@ export default class Login extends Component {
             <div className="bg-gray-900">
                 <div className="login container mx-auto w-full max-w-xs items-center pt-12 h-screen">
                     <form action="chat.html" method="GET" className="bg-white shadow-md rounded px-8 pt-8 pb-8 m-4">
-                        <label className="block text-lg font-bold mb-4 py-2 text-center bg-gray-800 rounded text-white">QED42 Chat Login</label>
+                        <label className="block text-lg font-bold mb-4 py-2 text-center bg-gray-800 rounded text-white">Healthcare Chat Login</label>
                         <div className="mb-4">
                             <label className="block text-gray-700 text-sm font-bold mb-2">
                                 Username</label>

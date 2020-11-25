@@ -7,7 +7,6 @@ export default class ChatWindow extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            loggedInUserId: "",
             users: [],
             messageToUser: "",
             ws: null,
@@ -18,17 +17,16 @@ export default class ChatWindow extends Component {
     }
 
     async componentDidMount() {
-        this.setState({ loggedInUserId: this.props.id })
         // API call to fetch all contacts
         try {
-            let contactsResult = await API.getContacts(this.props.id)
+            let contactsResult = await API.getContacts(this.props.loggedInUserObj._id, this.props.loggedInUserObj.role)
             this.setState({ users: contactsResult.data.data })
         } catch (error) {
             console.log("error:", error);
         }
 
         // Web Socket to Fetch all message-data
-        let ws = new WebSocket(`ws://localhost:3000/chat/${this.state.loggedInUserId}`)
+        let ws = new WebSocket(`ws://localhost:3000/chat/${this.props.loggedInUserObj._id}`)
         console.log("ws: ", ws);
         ws.onopen = () => {
             console.log("Connected websocket main component.");
@@ -52,7 +50,7 @@ export default class ChatWindow extends Component {
     }
 
     getNewMsgObj(newMsgObj) {
-        let msgToSend = { senderid: this.state.loggedInUserId, receiverid: this.state.messageToUser._id, ...newMsgObj }
+        let msgToSend = { senderid: this.props.loggedInUserObj._id, receiverid: this.state.messageToUser._id, ...newMsgObj }
         this.state.ws.send(JSON.stringify(msgToSend))
     }
 
@@ -63,9 +61,9 @@ export default class ChatWindow extends Component {
                     {(this.state.users.length > 0) && <ContactList users={this.state.users} selectedUser={this.getSelectedUser} />}
                     {this.state.messageToUser && <MessageBox
                         selectedUser={this.state.messageToUser}
-                        loggedInUserId={this.state.loggedInUserId}
+                        loggedInUserDP={this.props.loggedInUserObj.img}
                         messageData={this.state.messageData.filter(msg => (msg.from === this.state.messageToUser._id ||
-                            (msg.from === this.state.loggedInUserId && msg.to === this.state.messageToUser._id)))}
+                            (msg.from === this.props.loggedInUserObj._id && msg.to === this.state.messageToUser._id)))}
                         setNewMsgObj={this.getNewMsgObj}
                     />}
                 </div>

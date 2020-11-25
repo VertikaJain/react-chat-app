@@ -8,14 +8,13 @@ export default class ChatApp extends Component {
     super(props)
     this.state = {
       isLoggedIn: false,
-      id: ""
+      loggedInUserObj: {}
     }
     this.setLoggedinUser = this.setLoggedinUser.bind(this)
   }
 
-  setLoggedinUser(userid) {
-    this.setState({ isLoggedIn: true })
-    this.setState({ id: userid })
+  setLoggedinUser(loggedInUserObj) {
+    this.setState({ isLoggedIn: true, loggedInUserObj: { ...loggedInUserObj } })
   }
 
   render() {
@@ -23,7 +22,7 @@ export default class ChatApp extends Component {
     return (
       <div className="App">
         { !this.state.isLoggedIn && <Login loginProp={this.setLoggedinUser} />}
-        { this.state.isLoggedIn && this.state.id !== "" && <ChatWindow id={this.state.id} />}
+        { this.state.isLoggedIn && <ChatWindow loggedInUserObj={this.state.loggedInUserObj} />}
       </div>
     )
   }

@@ -17,12 +17,12 @@ const logIn = async (userName) => {
 }
 
 // GET all Users API
-const getContacts = async (userid) => {
+const getContacts = async (userid, role) => {
     return new Promise(async (resolve, reject) => {
         try {
             let response = await axios({
                 method: 'get',
-                url: Constants.BASE_URL + 'api/users/' + userid
+                url: Constants.BASE_URL + 'api/users/' + userid + "/" + role
             })
             resolve(response)
         } catch (error) {
