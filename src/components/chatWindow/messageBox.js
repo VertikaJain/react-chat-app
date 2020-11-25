@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import Moment from 'react-moment'
+import moment from 'moment'
 
 export default class MessageBox extends Component {
     constructor(props) {
@@ -15,9 +17,10 @@ export default class MessageBox extends Component {
 
     sendMessageToServer() {
         if (this.state.msgText) { //to not send empty message
+            console.log(moment().format('LT'));
             let msgObj = {
                 message: this.state.msgText,
-                date: Date.now()
+                date: moment().format('LT')
             }
             this.props.setNewMsgObj(msgObj)
         }

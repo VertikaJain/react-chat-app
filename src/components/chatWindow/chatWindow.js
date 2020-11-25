@@ -58,7 +58,11 @@ export default class ChatWindow extends Component {
         return (
             <div className="box-content mx-auto h-3/4 w-3/4 m-12 px-16 border rounded bg-blue-400">
                 <div className="container flex mx-auto m-16 rounded h-screen bg-white">
-                    {(this.state.users.length > 0) && <ContactList users={this.state.users} selectedUser={this.getSelectedUser} />}
+                    {(this.state.users.length > 0) && <ContactList
+                        users={this.state.users}
+                        selectedUser={this.getSelectedUser}
+                        messageData={this.state.messageData}
+                    />}
                     {this.state.messageToUser && <MessageBox
                         selectedUser={this.state.messageToUser}
                         loggedInUserDP={this.props.loggedInUserObj.img}

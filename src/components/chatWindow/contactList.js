@@ -4,7 +4,7 @@ export default class ContactList extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            users: this.props.users,
+            users: this.props.users
         }
     }
 
@@ -12,8 +12,23 @@ export default class ContactList extends Component {
         this.props.selectedUser(selectedUser)
     }
 
-    getContacts() {
+    getLastMessage(userid) {
+        for (let i = this.props.messageData.length - 1; i > 0; i--) {
+            if (this.props.messageData[i].from === userid || this.props.messageData[i].to === userid) {
+                return <div className="last-message px-2 text-sm">{this.props.messageData[i].msg}</div>
+            }
+        }
+    }
 
+    getLastMessageTime(userid){
+        for (let i = this.props.messageData.length - 1; i > 0; i--) {
+            if (this.props.messageData[i].from === userid || this.props.messageData[i].to === userid) {
+            return <div className="last-message-time w-1/4 text-right">{this.props.messageData[i].time}</div>
+            }
+        }
+    }
+
+    getContacts() {
         const contactDetails = this.state.users.map(user =>
             <div className="user flex mt-2 p-2 border-b " id={user._id} key={user._id} onClick={() => this.setSelectedUser(user)}>
                 <div className="w-1/4 rounded-full relative h-12 text-center">
@@ -21,9 +36,9 @@ export default class ContactList extends Component {
                 </div>
                 <div className="grid w-full">
                     <div className="contact-name font-bold px-2">{user.name}</div>
-                    <div className="last-message px-2 text-sm">hi there creating chat app in react js with typescript at qed42</div>
+                    {this.getLastMessage(user._id)}
                 </div>
-                <div className="last-message-time w-1/4 text-right">18:00</div>
+                {this.getLastMessageTime(user._id)}
             </div>
         )
         return (contactDetails)
