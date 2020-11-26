@@ -35,10 +35,10 @@
   text-overflow: ellipsis; 
 }
 
-.input-box {
+/* .input-box {
   border-top: 1px solid;
   border-top-color: rgb(202, 202, 202);
-}
+} */
 
 .user {
     filter: none; 
@@ -57,3 +57,12 @@
     transition: all .5s ease-in-out;  
 
   }
+
+/* .contact-box {
+    visibility: hidden;
+    clear: both;
+    float: left;
+    margin: 10px auto 5px 20px;
+    width: 28%;
+    display: none;
+} */

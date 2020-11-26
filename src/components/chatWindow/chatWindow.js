@@ -26,7 +26,7 @@ export default class ChatWindow extends Component {
         }
 
         // Web Socket to Fetch all message-data
-        let ws = new WebSocket(`ws://localhost:3000/chat/${this.props.loggedInUserObj._id}`)
+        let ws = new WebSocket(`ws://localhost:4000/chat/${this.props.loggedInUserObj._id}`)
         console.log("ws: ", ws);
         ws.onopen = () => {
             console.log("Connected websocket main component.");
@@ -56,8 +56,7 @@ export default class ChatWindow extends Component {
 
     render() {
         return (
-            <div className="box-content mx-auto h-3/4 w-3/4 m-12 px-16 border rounded bg-blue-400">
-                <div className="container flex mx-auto m-16 rounded h-screen bg-white">
+                <div className="container flex mx-auto m-2 rounded h-screen bg-white border border-blue-800 bg-gray-100">
                     {(this.state.users.length > 0) && <ContactList
                         users={this.state.users}
                         selectedUser={this.getSelectedUser}
@@ -71,7 +70,6 @@ export default class ChatWindow extends Component {
                         setNewMsgObj={this.getNewMsgObj}
                     />}
                 </div>
-            </div>
         )
     }
 }
