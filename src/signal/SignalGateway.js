@@ -52,7 +52,7 @@ class SignalProtocolManager {
     async initializeAsync() {
         await this._generateIdentityAsync();
 
-        var preKeyBundle = await this._generatePreKeyBundleAsync(123, 456);
+        var preKeyBundle = await this._generatePreKeyBundleAsync();
 
         this.signalServerStore.registerNewPreKeyBundle(this.userId, preKeyBundle);
     }
@@ -71,7 +71,7 @@ class SignalProtocolManager {
             var sessionBuilder = new libsignal.SessionBuilder(this.store, address);
 
             var remoteUserPreKey = this.signalServerStore.getPreKeyBundle(remoteUserId);
-            await sessionBuilder.processPreKey(remoteUserPreKey);
+            await sessionBuilder.processPreKey(remoteUserPreKey); // add recipient to session
 
             var sessionCipher = new libsignal.SessionCipher(this.store, address);
             this.store.storeSessionCipher(remoteUserId, sessionCipher);
@@ -125,39 +125,38 @@ class SignalProtocolManager {
     /**
      * Generates a new pre-key bundle for the local user.
      * 
-     * @param preKeyId An ID for the pre-key.
-     * @param signedPreKeyId An ID for the signed pre-key.
      * @returns A pre-key bundle.
      */
-    async _generatePreKeyBundleAsync(preKeyId, signedPreKeyId) {
+    async _generatePreKeyBundleAsync() {
         var result = await Promise.all([
             this.store.getIdentityKeyPair(),
             this.store.getLocalRegistrationId()
         ]);
 
         let identity = result[0];
+        console.log("identity...", identity);
         let registrationId = result[1];
 
         var keys = await Promise.all([
-            libsignal.KeyHelper.generatePreKey(preKeyId),
-            libsignal.KeyHelper.generateSignedPreKey(identity, signedPreKeyId),
+            libsignal.KeyHelper.generatePreKey(registrationId + 1),
+            libsignal.KeyHelper.generateSignedPreKey(identity, registrationId + 1)
         ]);
 
         let preKey = keys[0]
         let signedPreKey = keys[1];
 
-        this.store.storePreKey(preKeyId, preKey.keyPair);
-        this.store.storeSignedPreKey(signedPreKeyId, signedPreKey.keyPair);
+        this.store.storePreKey(preKey.keyId, preKey.keyPair);
+        this.store.storeSignedPreKey(signedPreKey.keyId, signedPreKey.keyPair);
 
         return {
             identityKey: identity.pubKey,
             registrationId: registrationId,
             preKey: {
-                keyId: preKeyId,
+                keyId: preKey.keyId,
                 publicKey: preKey.keyPair.pubKey
             },
             signedPreKey: {
-                keyId: signedPreKeyId,
+                keyId: signedPreKey.keyId,
                 publicKey: signedPreKey.keyPair.pubKey,
                 signature: signedPreKey.signature
             }
@@ -165,26 +164,17 @@ class SignalProtocolManager {
     }
 }
 
-/**
- * Runs the Signal Protocol demo.
- */
 
 
-export async function runDemo(userid, name, dummySignalServer) {
-    console.log("in run demo method...");
-    // var user1 = "user1@domain.cc";
-    // var user2 = "user2@domain.cc";
+export async function createSignalProtocolManager(userid, name, dummySignalServer) {
+    console.log("in createSignalProtocolManager...");
 
-    // var dummySignalServer = new SignalServerStore();
-
-    var signalProtocolManagerUser1 = new SignalProtocolManager(userid, dummySignalServer);
-    // var signalProtocolManagerUser2 = new SignalProtocolManager(user2, dummySignalServer);
+    let signalProtocolManagerUser = new SignalProtocolManager(userid, dummySignalServer);
 
     await Promise.all([
-        signalProtocolManagerUser1.initializeAsync(),
-        // signalProtocolManagerUser2.initializeAsync()
+        signalProtocolManagerUser.initializeAsync(),
     ]);
-
+    return signalProtocolManagerUser
     /**
      * Let's send an encrypted message from user1 to user2 and then from user2 back to user1.
      */
@@ -203,4 +193,7 @@ export async function runDemo(userid, name, dummySignalServer) {
     var decryptedMessage2 = await signalProtocolManagerUser1.decryptMessageAsync(user2, encryptedMessage2);
     alert("User1: Message received from User2\n\nEncrypted Message = " + encryptedMessage2.body + "\n\nDecrypted Message = " + decryptedMessage2); */
 }
+
+
+
 
