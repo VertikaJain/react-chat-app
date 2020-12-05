@@ -1,15 +1,23 @@
 import React, { Component } from 'react'
 import API from '../../services/api'
+import { runDemo, SignalServerStore } from "../../signal/SignalProtocolDemo"
 
 export default class Login extends Component {
     constructor(props) {
         super(props)
         this.state = {
             username: "",
+            dummySignalServer: ""
         }
+    }
+    componentDidMount() {
+        this.setState({ dummySignalServer: new SignalServerStore() })
     }
 
     onLoginComplete = (loggedInUserObj) => {
+        console.log("loggedin user object...", loggedInUserObj);
+        // Initializing signal server here
+        runDemo(loggedInUserObj._id, loggedInUserObj.name, this.state.dummySignalServer)
         this.props.loginProp(loggedInUserObj)
     }
 
