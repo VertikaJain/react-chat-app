@@ -3,6 +3,7 @@ import ContactList from './contactList'
 import MessageBox from './messageBox'
 import API from '../../services/api'
 
+
 export default class ChatWindow extends Component {
     constructor(props) {
         super(props)
@@ -10,7 +11,8 @@ export default class ChatWindow extends Component {
             users: [],
             messageToUser: "",
             ws: null,
-            messageData: []
+            messageData: [],
+            lastSentMessage: undefined
         }
         this.getSelectedUser = this.getSelectedUser.bind(this)
         this.getNewMsgObj = this.getNewMsgObj.bind(this)
@@ -32,8 +34,19 @@ export default class ChatWindow extends Component {
             console.log("Connected websocket main component.");
             this.setState({ ws: ws });
         }
-        ws.onmessage = (e) => {
+        ws.onmessage = async (e) => {
             let msgData = JSON.parse(e.data)
+            // Decryption
+            if (Array.isArray(msgData)) {
+                for (let data of msgData) {
+                    let decrytedMessage = await this.props.signalProtocolManagerUser.decryptMessageAsync(data.from, data.msg)
+                    data.msg = decrytedMessage
+                }
+            }
+            else {
+                let decrytedMessage = await this.props.signalProtocolManagerUser.decryptMessageAsync(msgData.from, msgData.msg)
+                msgData.msg = decrytedMessage
+            }
             this.setState(prevState => ({
                 messageData: prevState.messageData.concat(msgData)
             }))
@@ -49,27 +62,35 @@ export default class ChatWindow extends Component {
         this.setState({ messageToUser: selectedUser })
     }
 
-    getNewMsgObj(newMsgObj) {
+    async getNewMsgObj(newMsgObj) {
         let msgToSend = { senderid: this.props.loggedInUserObj._id, receiverid: this.state.messageToUser._id, ...newMsgObj }
-        this.state.ws.send(JSON.stringify(msgToSend))
+        // send data for encryption, then send to push server
+        try {
+            let encryptedMessage = await this.props.signalProtocolManagerUser.encryptMessageAsync(this.state.messageToUser._id, newMsgObj.message);
+            msgToSend.message = encryptedMessage
+            this.state.ws.send(JSON.stringify(msgToSend))
+            this.setState({ lastSentMessage: newMsgObj.message })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     render() {
         return (
-                <div className="container flex mx-auto m-2 rounded h-screen bg-white border border-blue-800 bg-gray-100">
-                    {(this.state.users.length > 0) && <ContactList
-                        users={this.state.users}
-                        selectedUser={this.getSelectedUser}
-                        messageData={this.state.messageData}
-                    />}
-                    {this.state.messageToUser && <MessageBox
-                        selectedUser={this.state.messageToUser}
-                        loggedInUserDP={this.props.loggedInUserObj.img}
-                        messageData={this.state.messageData.filter(msg => (msg.from === this.state.messageToUser._id ||
-                            (msg.from === this.props.loggedInUserObj._id && msg.to === this.state.messageToUser._id)))}
-                        setNewMsgObj={this.getNewMsgObj}
-                    />}
-                </div>
+            <div className="container flex mx-auto m-2 rounded h-screen bg-white border border-blue-800 bg-gray-100">
+                {(this.state.users.length > 0) && <ContactList
+                    users={this.state.users}
+                    selectedUser={this.getSelectedUser}
+                    messageData={this.state.messageData}
+                />}
+                {this.state.messageToUser && <MessageBox
+                    selectedUser={this.state.messageToUser}
+                    loggedInUserDP={this.props.loggedInUserObj.img}
+                    messageData={this.state.messageData.filter(msg => (msg.from === this.state.messageToUser._id ||
+                        (msg.from === this.props.loggedInUserObj._id && msg.to === this.state.messageToUser._id)))}
+                    setNewMsgObj={this.getNewMsgObj}
+                />}
+            </div>
         )
     }
 }

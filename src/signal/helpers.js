@@ -1,7 +1,7 @@
 /*
  * vim: ts=4:sw=4
  */
-
+/* global dcodeIO */
 const libsignal = window.libsignal
 
 const util = (function () {
@@ -14,7 +14,7 @@ const util = (function () {
             if (typeof thing == 'string') {
                 return thing;
             }
-            return new libsignal.ByteBuffer.wrap(thing).toString('binary');
+            return new dcodeIO.ByteBuffer.wrap(thing).toString('binary');
         },
         toArrayBuffer: function (thing) {
             if (thing === undefined) {
@@ -32,7 +32,7 @@ const util = (function () {
             } else {
                 throw new Error("Tried to convert a non-string of type " + typeof thing + " to an array buffer");
             }
-            return new libsignal.ByteBuffer.wrap(thing, 'binary').toArrayBuffer();
+            return new dcodeIO.ByteBuffer.wrap(thing, 'binary').toArrayBuffer();
         },
         isEqual: function (a, b) {
             // TODO: Special-case arraybuffers, etc
@@ -46,6 +46,24 @@ const util = (function () {
                 throw new Error("a/b compare too short");
             }
             return a.substring(0, Math.min(maxLength, a.length)) == b.substring(0, Math.min(maxLength, b.length));
+        },
+        arrayBufferToBase64: (buffer) => {
+            let binary = '';
+            let bytes = new Uint8Array(buffer);
+            let len = bytes.byteLength;
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        },
+        base64ToArrayBuffer: (base64) => {
+            let binary_string = window.atob(base64);
+            let len = binary_string.length;
+            let bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binary_string.charCodeAt(i);
+            }
+            return bytes.buffer;
         }
     };
 })();

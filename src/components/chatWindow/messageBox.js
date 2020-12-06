@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import moment from 'moment'
-import { Link, Router } from 'react-router-dom';
 
 export default class MessageBox extends Component {
     constructor(props) {

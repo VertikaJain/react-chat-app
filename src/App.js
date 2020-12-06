@@ -19,8 +19,10 @@ export default class ChatApp extends Component {
   setLoggedinUser(loggedInUserObj) {
     this.setState({ isLoggedIn: true, loggedInUserObj: { ...loggedInUserObj } }, () => {
       // Initializing signal server here
-      let signalProtocolManagerUser = createSignalProtocolManager(loggedInUserObj._id, loggedInUserObj.name, this.state.dummySignalServer)
-      this.setState({ signalProtocolManagerUser: signalProtocolManagerUser })
+      createSignalProtocolManager(loggedInUserObj._id, loggedInUserObj.name, this.state.dummySignalServer)
+        .then(signalProtocolManagerUser => {
+          this.setState({ signalProtocolManagerUser: signalProtocolManagerUser })
+        })
     })
   }
 
