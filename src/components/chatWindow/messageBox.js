@@ -25,29 +25,29 @@ export default class MessageBox extends Component {
         this.setState({ msgText: "" })
     }
 
+    // Method to Display Messages
     addMessagesToChat() {
-        const msgContent = this.props.messageData.map(function (mdata) {
-            if (mdata.to === this.props.selectedUser._id)
-                return (<div key={mdata.msgid} className="outgoing w-3/4 justify-end float-right flex my-2">
-                    <div className=" w-max bg-gray-200 text-black shadow-lg clear-both p-2 rounded-md">
-                        {mdata.msg}</div>
-                    <div className="w-16 rounded-full relative h-16 mx-2 px-2">
-                        <img className="profile-picture absolute h-full object-cover self-center p-2" src={"/images/" + this.props.loggedInUserDP} alt="dp" />
-                    </div>
-                </div>)
-            else
-                return (<div key={mdata.msgid} className="incoming w-3/4 flex my-2">
-                    <div className="w-16 rounded-full relative h-16 mx-2 px-2">
-                        <img className="profile-picture absolute h-full object-cover self-center p-2" src={"/images/" + this.props.selectedUser.img} alt="dp" />
-                    </div>
-                    <div className=" w-max bg-gray-900 text-white shadow-lg clear-both p-2 rounded-md">
-                        {mdata.msg}</div>
-                </div>)
-
-
-
-        }.bind(this))
-        return (msgContent)
+        if (this.props.messages) {
+            const msgContent = this.props.messages.map(function (message) {
+                if (message.to === this.props.selectedUser._id)
+                    return (<div key={message.messageId} className="outgoing w-3/4 justify-end float-right flex my-2">
+                        <div className=" w-max bg-gray-200 text-black shadow-lg clear-both p-2 rounded-md">
+                            {message.msg}</div>
+                        <div className="w-16 rounded-full relative h-16 mx-2 px-2">
+                            <img className="profile-picture absolute h-full object-cover self-center p-2" src={"/images/" + this.props.loggedInUserDP} alt="dp" />
+                        </div>
+                    </div>)
+                else
+                    return (<div key={message.messageId} className="incoming w-3/4 flex my-2">
+                        <div className="w-16 rounded-full relative h-16 mx-2 px-2">
+                            <img className="profile-picture absolute h-full object-cover self-center p-2" src={"/images/" + this.props.selectedUser.img} alt="dp" />
+                        </div>
+                        <div className=" w-max bg-gray-900 text-white shadow-lg clear-both p-2 rounded-md">
+                            {message.msg}</div>
+                    </div>)
+            }.bind(this))
+            return (msgContent)
+        }
     }
 
     render() {
