@@ -12,33 +12,37 @@ export default class ContactList extends Component {
         this.props.selectedUser(selectedUser)
     }
 
+    // Method to Update Last Message
     getLastMessage(userid) {
-        for (let i = this.props.messageData.length - 1; i > 0; i--) {
-            if (this.props.messageData[i].from === userid || this.props.messageData[i].to === userid) {
-                return <div className="last-message px-2 text-sm">{this.props.messageData[i].msg}</div>
+        for (let chat of Object.values(this.props.chats)) {
+            if (chat.members.includes(userid)) {
+                return chat.messages[chat.messages.length - 1]
             }
         }
     }
 
-    getLastMessageTime(userid) {
-        for (let i = this.props.messageData.length - 1; i > 0; i--) {
-            if (this.props.messageData[i].from === userid || this.props.messageData[i].to === userid) {
-                return <div className="last-message-time w-1/4 text-right">{this.props.messageData[i].time}</div>
-            }
-        }
+    getLastMessageDetails(user) {
+        let lastMessage = this.getLastMessage(user._id)
+        const lastMessageDetails = (
+            <>
+                <div className="grid w-full">
+                    <div className="contact-name font-bold px-2">{user.name}</div>
+                    {lastMessage ? <div className="last-message px-2 text-sm">{lastMessage.msg}</div> : null}
+                </div>
+                {lastMessage ? <div className="last-message-time w-1/4 text-right">{lastMessage.time}</div> : null}
+            </>
+        )
+        return lastMessageDetails
     }
 
     getContacts() {
+
         const contactDetails = this.state.users.map(user =>
             <div className="user flex mt-2 p-2 border-b " id={user._id} key={user._id} onClick={() => this.setSelectedUser(user)}>
                 <div className="w-1/4 rounded-full relative h-12 text-center">
                     <img className="profile-picture absolute h-full object-cover self-center" src={"/images/" + user.img} alt="dp" />
                 </div>
-                <div className="grid w-full">
-                    <div className="contact-name font-bold px-2">{user.name}</div>
-                    {this.getLastMessage(user._id)}
-                </div>
-                {this.getLastMessageTime(user._id)}
+                {this.getLastMessageDetails(user)}
             </div>
         )
         return (contactDetails)

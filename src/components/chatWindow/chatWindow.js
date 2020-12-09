@@ -125,7 +125,8 @@ export default class ChatWindow extends Component {
                 {(this.state.users.length > 0) && <ContactList
                     users={this.state.users}
                     selectedUser={this.getSelectedUser}
-                    messages={(this.state.chats[this.getSelectedUserChatId()]) && this.state.chats[this.getSelectedUserChatId()].messages}
+                    chats={this.state.chats}
+                    // messages={(this.state.chats[this.getSelectedUserChatId()]) && this.state.chats[this.getSelectedUserChatId()].messages}
                 />}
                 {this.state.messageToUser && <MessageBox
                     selectedUser={this.state.messageToUser}
