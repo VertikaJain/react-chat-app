@@ -1,70 +1,46 @@
-# Getting Started with Create React App
+# A Secure Chat Application using React and the Signal Protocol
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Technology Stack
+    1. ReactJS library for UI
+    2. Signal Protocol Implementation for E2EE
+    3. Axios for AJAX calls
+    4. LocalStorage to store/fetch Pre-key bundle and Chats
+    5. Web Sockets Implementation for Instant Messaging
 
-## Available Scripts
+## Components
+    1. Login
+    2. Chat Window
+            1. Contact List
+            2. Message Box
 
-In the project directory, you can run:
+## Axios Calls
+    1. GET - api/users/login/userName - Returns User Object of the given User
+    2. GET - api/users/users/userId/role - Returns Users Array other than the given User with given role
 
-### `yarn start`
+## Web Sockets
+    1. Establishing WS Connection: `let webSocket = new WebSocket("ws://localhost:3000/chat")`
+    2. Event Listeners of the webSocket Object:
+    ```
+    webSocket.onopen = () => {
+        console.log(‘WebSocket Client Connected’);
+        webSocket.send('Hi this is web client.');
+    };
+    webSocket.onmessage = (e) => {
+        console.log(‘Received: ’ + e.data);
+    };
+    webSocket.close = () => {
+        console.log('WebSocket Client Closed.’);
+    };
+    ```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Signal Protocol Implementation
+    1. InMemorySignalProtocolStore.js (and helpers.js) are taken for storage purpose from Signal Github (link mentioned in resources)
+    2. libsignal-protocol.js (also from Signal Github) implements the protocol
+    3. Signal Gateway - Created by me to integrate React with Signal. It performs the Initialization, Encryption and Decryption functionality when required on Frontend. Check the file in src/signal/SignalGateway.js for detailed code.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Resources
+    1. [Signal Protocol in JavaScript Github](https://github.com/signalapp/libsignal-protocol-javascript)
+    2. [Why Axios](https://medium.com/@MinimalGhost/what-is-axios-js-and-why-should-i-care-7eb72b111dc0)
+    3. [ReactJS](https://reactjs.org/)
+    4. [Web Sockets API](https://developer.mozilla.org/en-US/docs/Web/API/Websockets_API)
