@@ -45,12 +45,12 @@ export default class ChatWindow extends Component {
             let newMessage = JSON.parse(e.data)
             // In case message is from self, save state-stored message to Chats i.e. no need of using/decrypting the received message
             // This is only for verifying that the messages have successfully been received.
-            if (newMessage.from === this.props.loggedInUserObj._id) {
-                newMessage.msg = this.state.lastSentMessage
+            if (newMessage.senderid === this.props.loggedInUserObj._id) {
+                newMessage.message = this.state.lastSentMessage
             } else { // Otherwise decrypt it and then save to Chats
                 // Decryption using Signal Protocol
-                let decrytedMessage = await this.props.signalProtocolManagerUser.decryptMessageAsync(newMessage.from, newMessage.msg)
-                newMessage.msg = decrytedMessage
+                let decrytedMessage = await this.props.signalProtocolManagerUser.decryptMessageAsync(newMessage.senderid, newMessage.message)
+                newMessage.message = decrytedMessage
             }
 
             // Update message data to Chats & LocalStorage -> 2 Scenarios
@@ -69,7 +69,7 @@ export default class ChatWindow extends Component {
             else {
                 let newChat = {
                     chatId: newMessage.chatId,
-                    members: [newMessage.from, newMessage.to],
+                    members: [newMessage.senderid, newMessage.receiverid],
                     messages: []
                 }
                 newChat.messages.push(newMessage)
@@ -93,8 +93,7 @@ export default class ChatWindow extends Component {
     // Method to Send New Message using Web Socket when User hits send button from Message Box component
     async getNewMsgObj(newMsgObj) {
         let selectedUserChatId = this.getSelectedUserChatId()
-        let msgToSend = { chatid: selectedUserChatId, senderid: this.props.loggedInUserObj._id, receiverid: this.state.messageToUser._id, ...newMsgObj }
-        
+        let msgToSend = { chatId: selectedUserChatId, senderid: this.props.loggedInUserObj._id, receiverid: this.state.messageToUser._id, ...newMsgObj }
         // Send Message for Encryption to Signal Server, then send the Encrypted Message to Push server
         try {
             let encryptedMessage = await this.props.signalProtocolManagerUser.encryptMessageAsync(this.state.messageToUser._id, newMsgObj.message);
@@ -126,7 +125,6 @@ export default class ChatWindow extends Component {
                     users={this.state.users}
                     selectedUser={this.getSelectedUser}
                     chats={this.state.chats}
-                    // messages={(this.state.chats[this.getSelectedUserChatId()]) && this.state.chats[this.getSelectedUserChatId()].messages}
                 />}
                 {this.state.messageToUser && <MessageBox
                     selectedUser={this.state.messageToUser}

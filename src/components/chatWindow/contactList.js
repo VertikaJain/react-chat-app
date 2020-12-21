@@ -27,9 +27,9 @@ export default class ContactList extends Component {
             <>
                 <div className="grid w-full">
                     <div className="contact-name font-bold px-2">{user.name}</div>
-                    {lastMessage ? <div className="last-message px-2 text-sm">{lastMessage.msg}</div> : null}
+                    {lastMessage ? <div className="last-message px-2 text-sm">{lastMessage.message}</div> : null}
                 </div>
-                {lastMessage ? <div className="last-message-time w-1/4 text-right">{lastMessage.time}</div> : null}
+                {lastMessage ? <div className="last-message-time w-1/4 text-right">{lastMessage.date}</div> : null}
             </>
         )
         return lastMessageDetails
