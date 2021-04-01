@@ -5,14 +5,10 @@ import SignalProtocolStore from "./InMemorySignalProtocolStore";
 const libsignal = window.libsignal
 /**
  * Dummy signal server connector.
- * 
  * In a real application this component would connect to your signal 
  * server for storing and fetching user public keys over HTTP.
  */
 export class SignalServerStore {
-    /* constructor() {
-        this.store = {};
-    } */
     /**
      * When a user logs on they should generate their keys and then register them with the server.
      * 
@@ -22,13 +18,20 @@ export class SignalServerStore {
     registerNewPreKeyBundle(userId, preKeyBundle) {
         let storageBundle = { ...preKeyBundle }
         storageBundle.identityKey = util.arrayBufferToBase64(storageBundle.identityKey)
-        storageBundle.preKey.publicKey = util.arrayBufferToBase64(storageBundle.preKey.publicKey)
+        storageBundle.preKeys = storageBundle.preKeys.map(preKey => {
+            return {
+                ...preKey,
+                publicKey: util.arrayBufferToBase64(preKey.publicKey)
+            }
+        })
         storageBundle.signedPreKey.publicKey = util.arrayBufferToBase64(storageBundle.signedPreKey.publicKey)
         storageBundle.signedPreKey.signature = util.arrayBufferToBase64(storageBundle.signedPreKey.signature)
         localStorage.setItem(userId, JSON.stringify(storageBundle))
-        // this.store[userId] = preKeyBundle;
     }
 
+    updatePreKeyBundle(userId, preKeyBundle) {
+        localStorage.setItem(userId, JSON.stringify(preKeyBundle))
+    }
     /**
      * Gets the pre-key bundle for the given user ID.
      * If you want to start a conversation with a user, you need to fetch their pre-key bundle first.
@@ -36,13 +39,20 @@ export class SignalServerStore {
      * @param userId The ID of the user.
      */
     getPreKeyBundle(userId) {
-        let storageBundle = JSON.parse(localStorage.getItem(userId))
-        storageBundle.identityKey = util.base64ToArrayBuffer(storageBundle.identityKey)
-        storageBundle.preKey.publicKey = util.base64ToArrayBuffer(storageBundle.preKey.publicKey)
-        storageBundle.signedPreKey.publicKey = util.base64ToArrayBuffer(storageBundle.signedPreKey.publicKey)
-        storageBundle.signedPreKey.signature = util.base64ToArrayBuffer(storageBundle.signedPreKey.signature)
-        return storageBundle
-        // return this.store[userId];
+        let preKeyBundle = JSON.parse(localStorage.getItem(userId))
+        let preKey = preKeyBundle.preKeys.splice(-1)
+        preKey[0].publicKey = util.base64ToArrayBuffer(preKey[0].publicKey)
+        this.updatePreKeyBundle(userId, preKeyBundle)
+        return {
+            identityKey: util.base64ToArrayBuffer(preKeyBundle.identityKey),
+            registrationId: preKeyBundle.registrationId,
+            signedPreKey: {
+                keyId: preKeyBundle.signedPreKey.keyId,
+                publicKey: util.base64ToArrayBuffer(preKeyBundle.signedPreKey.publicKey),
+                signature: util.base64ToArrayBuffer(preKeyBundle.signedPreKey.signature),
+            },
+            preKey: preKey[0]
+        }
     }
 }
 
@@ -152,24 +162,35 @@ class SignalProtocolManager {
         let identity = result[0];
         let registrationId = result[1];
 
+        // PLEASE NOTE: I am creating set of 4 pre-keys for demo purpose only.
+        // The libsignal-javascript does not provide a counter to generate multiple keys, contrary to the case of JAVA (KeyHelper.java)
+        // Therefore you need to set it manually (as per my research)
         var keys = await Promise.all([
             libsignal.KeyHelper.generatePreKey(registrationId + 1),
+            libsignal.KeyHelper.generatePreKey(registrationId + 2),
+            libsignal.KeyHelper.generatePreKey(registrationId + 3),
+            libsignal.KeyHelper.generatePreKey(registrationId + 4),
             libsignal.KeyHelper.generateSignedPreKey(identity, registrationId + 1)
         ]);
 
-        let preKey = keys[0]
-        let signedPreKey = keys[1];
+        let preKeys = [keys[0], keys[1], keys[2], keys[3]]
+        let signedPreKey = keys[4];
 
-        this.store.storePreKey(preKey.keyId, preKey.keyPair);
+        preKeys.forEach(preKey => {
+            this.store.storePreKey(preKey.keyId, preKey.keyPair);
+        })
         this.store.storeSignedPreKey(signedPreKey.keyId, signedPreKey.keyPair);
 
+        let publicPreKeys = preKeys.map(preKey => {
+            return {
+                keyId: preKey.keyId,
+                publicKey: preKey.keyPair.pubKey
+            }
+        })
         return {
             identityKey: identity.pubKey,
             registrationId: registrationId,
-            preKey: {
-                keyId: preKey.keyId,
-                publicKey: preKey.keyPair.pubKey
-            },
+            preKeys: publicPreKeys,
             signedPreKey: {
                 keyId: signedPreKey.keyId,
                 publicKey: signedPreKey.keyPair.pubKey,
