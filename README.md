@@ -41,7 +41,7 @@
 2. libsignal-protocol.js (also from Signal Github) implements the protocol
 3. Signal Gateway - Created by me to integrate React with Signal. It performs the Initialization, Encryption and Decryption functionality when required on Frontend. Check the file in src/signal/SignalGateway.js for detailed code.
 
-* Note: If you do not clear local storage, then you can recover your old conversations post re-login since these are saved in their respective decrypted form. No data is stored on the server. Kindly view the tutorial for more details. *
+**Note:** If you do not clear local storage, then you can recover your old conversations post re-login since these are saved in their respective decrypted form. No data is stored on the server. Kindly view the tutorial for more details.
 
 ## Resources
 1. [Complete YouTube Tutorial for this project](https://www.youtube.com/watch?v=gNbdgIznjhU&ab_channel=QED42)
